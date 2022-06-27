@@ -1,15 +1,25 @@
-from flask import Flask, render_template, request, flash, redirect
+from flask import Flask, render_template, flash, redirect
+import time
 from flask_sqlalchemy import SQLAlchemy
-from werkzeug.security import generate_password_hash, check_password_hash
-import datetime
+from flask_wtf import FlaskForm
+from wtforms import SubmitField, StringField, PasswordField
+from wtforms.validators import DataRequired
 
 app = Flask(__name__)
+
 app.config['SQLALCHEMY_DATABSE_URI'] = 'sqlite:///Users.db'
+app.config['SECRET_KEY'] = 'Frosty mangoes'
 
-@app.route('/test')
-def index():
-    return render_template('index.html')
+db = SQLAlchemy(app)
 
+t = SubmitField('Submit')
 
-if __name__ == "__main__":
-    app.run(debug=True)
+class users(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
+    password = db.Column(db.String(128))
+    
+    def __init__(self, name, password):
+        self.name = name
+        self.password = password
+        
